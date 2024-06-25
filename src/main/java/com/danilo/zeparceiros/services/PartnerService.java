@@ -5,10 +5,13 @@ import com.danilo.zeparceiros.dtos.GeoJsonMultiPolygonDTO;
 import com.danilo.zeparceiros.dtos.GeoJsonPointDTO;
 import com.danilo.zeparceiros.dtos.PartnerRequestDTO;
 import com.danilo.zeparceiros.dtos.PartnerResponseDTO;
+import com.danilo.zeparceiros.exceptions.AreaNotCoveredException;
 import com.danilo.zeparceiros.exceptions.PartnerNotFoundException;
 import com.danilo.zeparceiros.repositories.PartnerRepository;
 import lombok.AllArgsConstructor;
 import org.locationtech.jts.geom.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -81,5 +84,19 @@ public class PartnerService {
         }
 
         return geometryFactory.createPoint(new Coordinate(coordinates.get(0), coordinates.get(1)));
+    }
+
+    public PartnerResponseDTO searchPartner(Double lat, Double lon) {
+        Point location = geometryFactory.createPoint(new Coordinate(lat, lon));
+        Pageable limit = PageRequest.of(0, 1);
+
+        List<Partner> closestPartners = partnerRepository.findClosestPartners(location, limit);
+
+        if (closestPartners.isEmpty()) {
+            throw new AreaNotCoveredException(lat, lon);
+        }
+
+        Partner closest = closestPartners.get(0);
+        return new PartnerResponseDTO(closest);
     }
 }

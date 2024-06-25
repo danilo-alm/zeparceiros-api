@@ -27,4 +27,10 @@ public class PartnerController {
         URI uri = URI.create("/api/partners/" + partner.id());
         return ResponseEntity.created(uri).body(partner);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<PartnerResponseDTO> searchPartner(@RequestParam Double lat, @RequestParam Double lon) {
+        PartnerResponseDTO partner = this.partnerService.searchPartner(lat, lon);
+        return ResponseEntity.ok().body(partner);
+    }
 }
