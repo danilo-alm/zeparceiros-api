@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: ze-parceiros
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${DB_NAME:ze-delivery}
+    username: ${DB_USERNAME:user}
+    password: ${DB_PASSWORD:password}
