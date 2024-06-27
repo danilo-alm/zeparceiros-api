@@ -13,6 +13,6 @@ public interface PartnerRepository extends JpaRepository<Partner, Long> {
     @Query("""
             SELECT p FROM Partner p
             WHERE ST_Contains(ST_SetSRID(p.coverageArea, 4326), ST_SetSRID(:location, 4326)) = true
-            ORDER BY ST_Distance(p.address, :location) ASC""")
+            ORDER BY ST_Distance(p.address, ST_SetSRID(:location, 4326)) ASC""")
     List<Partner> findClosestPartners(@Param("location") Point location, Pageable pageable);
 }
