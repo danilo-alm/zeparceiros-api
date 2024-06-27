@@ -25,7 +25,7 @@ public class PartnerRepositoryTests {
     GeometryFactory geometryFactory;
 
     private Partner createPartner(String tradingName, String document, String ownerName, Point address, MultiPolygon coverageArea) {
-        return Partner.builder().tradingName(tradingName).document(document).ownerName(ownerName).address(address).coverageArea(coverageArea) .build();
+        return Partner.builder().tradingName(tradingName).document(document).ownerName(ownerName).address(address).coverageArea(coverageArea).build();
     }
 
     private List<Partner> getTestPartners() {
