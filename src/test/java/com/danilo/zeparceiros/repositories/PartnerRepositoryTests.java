@@ -19,7 +19,7 @@ import java.util.List;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 @Transactional
-public class PartnerRepositoryTest {
+public class PartnerRepositoryTests {
     @Autowired
     PartnerRepository partnerRepository;
     GeometryFactory geometryFactory;
