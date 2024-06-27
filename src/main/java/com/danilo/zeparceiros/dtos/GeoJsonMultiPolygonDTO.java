@@ -14,6 +14,11 @@ public class GeoJsonMultiPolygonDTO {
     private final String type;
     private final List<List<List<List<Double>>>> coordinates;
 
+    public GeoJsonMultiPolygonDTO() {
+        this.type = "MultiPolygon";
+        this.coordinates = new ArrayList<>();
+    }
+
     public GeoJsonMultiPolygonDTO(MultiPolygon multiPolygon) {
         this.type = multiPolygon.getGeometryType();
         this.coordinates = convertToNestedList(multiPolygon.getCoordinates());

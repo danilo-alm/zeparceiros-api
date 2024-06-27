@@ -6,6 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public record GeoJsonPointDTO(String type, List<Double> coordinates) {
+    public GeoJsonPointDTO() {
+        this("Point", Arrays.asList(0.0, 0.0));
+    }
+
     public GeoJsonPointDTO(Point p) {
         this(
             p.getGeometryType(),
