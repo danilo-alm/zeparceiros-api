@@ -45,7 +45,7 @@ public class PartnerService {
         return new PartnerResponseDTO(partner);
     }
 
-    public MultiPolygon convertGeoJsonToJtsMultiPolygon(GeoJsonMultiPolygonDTO geoJsonDto) throws IllegalArgumentException {
+    private MultiPolygon convertGeoJsonToJtsMultiPolygon(GeoJsonMultiPolygonDTO geoJsonDto) throws IllegalArgumentException {
         if (!geoJsonDto.getType().equalsIgnoreCase("MultiPolygon")) {
             throw new IllegalArgumentException("Input GeoJSON is not of type MultiPolygon");
         }
