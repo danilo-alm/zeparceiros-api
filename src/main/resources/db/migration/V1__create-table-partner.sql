@@ -1,5 +1,3 @@
-CREATE EXTENSION postgis;
-
 CREATE TABLE partner (
     id BIGSERIAL PRIMARY KEY,
     trading_name TEXT NOT NULL,
