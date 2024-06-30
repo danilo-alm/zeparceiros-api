@@ -4,10 +4,13 @@ import com.danilo.zeparceiros.dtos.PartnerRequestDTO;
 import com.danilo.zeparceiros.dtos.PartnerResponseDTO;
 import com.danilo.zeparceiros.services.PartnerService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/partners")
@@ -26,6 +29,12 @@ public class PartnerController {
         PartnerResponseDTO partner = this.partnerService.createPartner(data);
         URI uri = URI.create("/api/partners/" + partner.id());
         return ResponseEntity.created(uri).body(partner);
+    }
+
+    @PostMapping("/batch")
+    public ResponseEntity<List<PartnerResponseDTO>> createPartners(@RequestBody Map<String, List<PartnerRequestDTO>> data) {
+        List<PartnerResponseDTO> created = this.partnerService.createPartners(data);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @GetMapping("/search")

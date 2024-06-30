@@ -35,11 +35,19 @@ public class PartnerRepositoryTests {
     }
 
     @Test
-    public void PartnerRepository_SaveAll_ReturnsSavedPartner() {
-        partnerRepository.save(partner1);
+    public void PartnerRepository_Save_ReturnsSavedPartner() {
+        Partner partner = partnerRepository.save(partner1);
 
-        Assertions.assertNotNull(partner1);
-        Assertions.assertTrue(partner1.getId() > 0);
+        Assertions.assertNotNull(partner);
+        Assertions.assertTrue(partner.getId() > 0);
+    }
+
+    @Test
+    public void PartnerRepository_SaveAll_ReturnsAllSavedPartners() {
+        List<Partner> partners = partnerRepository.saveAll(List.of(partner1));
+
+        Assertions.assertNotNull(partners);
+        Assertions.assertFalse(partners.isEmpty());
     }
 
     @Test

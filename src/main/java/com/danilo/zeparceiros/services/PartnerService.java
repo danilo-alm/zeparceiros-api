@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -43,6 +44,24 @@ public class PartnerService {
         this.partnerRepository.save(partner);
 
         return new PartnerResponseDTO(partner);
+    }
+
+    public List<PartnerResponseDTO> createPartners(Map<String, List<PartnerRequestDTO>> data) {
+        List<Partner> partners = new ArrayList<>(data.size());
+
+        for (PartnerRequestDTO p : data.get("pdvs")) {
+            partners.add(Partner.builder()
+                .document(p.document())
+                .tradingName(p.tradingName())
+                .ownerName(p.ownerName())
+                .coverageArea(this.convertGeoJsonToJtsMultiPolygon(p.coverageArea()))
+                .address(this.convertGeoJsonToJtsPoint(p.address()))
+                .build()
+            );
+        }
+
+        this.partnerRepository.saveAll(partners);
+        return partners.stream().map(PartnerResponseDTO::new).toList();
     }
 
     private MultiPolygon convertGeoJsonToJtsMultiPolygon(GeoJsonMultiPolygonDTO geoJsonDto) throws IllegalArgumentException {

@@ -23,10 +23,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
@@ -71,6 +70,21 @@ public class PartnerServiceTests {
         PartnerResponseDTO partnerResponseDTO = this.partnerService.createPartner(new PartnerRequestDTO());
 
         Assertions.assertNotNull(partnerResponseDTO);
+    }
+
+    @Test
+    public void PartnerService_CreatePartners_ReturnsListOfPartnerResponseDto() {
+        when(partnerRepository.saveAll(anyList())).thenReturn(List.of(PartnerFactory.createPartner()));
+        when(geometryFactoryMock.createMultiPolygon(any(Polygon[].class))).thenReturn(geometryFactory.createMultiPolygon(new Polygon[]{}));
+        when(geometryFactoryMock.createPoint(any(Coordinate.class))).thenReturn(geometryFactory.createPoint(new Coordinate(0, 0)));
+
+        Map<String, List<PartnerRequestDTO>> PartnerMap = new HashMap<>();
+        PartnerMap.put("pdvs", List.of(new PartnerRequestDTO()));
+
+        List<PartnerResponseDTO> partnerResponseDTO = this.partnerService.createPartners(PartnerMap);
+
+        Assertions.assertNotNull(partnerResponseDTO);
+        Assertions.assertFalse(partnerResponseDTO.isEmpty());
     }
 
     @Test

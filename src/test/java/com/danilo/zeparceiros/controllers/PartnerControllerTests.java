@@ -18,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -44,10 +46,7 @@ public class PartnerControllerTests {
     private PartnerRequestDTO partnerRequestDTO;
     private PartnerResponseDTO partnerResponseDTO;
 
-    public void validateResponseContainsPartnerResponseDTO(ResultActions response, PartnerResponseDTO partnerResponseDTO) throws Exception {
-        String jsonResponse = response.andReturn().getResponse().getContentAsString();
-        Map<String, Object> responseMap = JsonPath.parse(jsonResponse).read("$");
-
+    public void validateResponseMapIsResponseDTO(Map<String, Object> responseMap, PartnerResponseDTO partnerResponseDTO) throws Exception {
         String expectedCoverageAreaJson = objectMapper.writeValueAsString(partnerResponseDTO.coverageArea());
         String expectedAddressJson = objectMapper.writeValueAsString(partnerResponseDTO.address());
 
@@ -58,6 +57,13 @@ public class PartnerControllerTests {
             () -> assertEquals(expectedCoverageAreaJson, objectMapper.writeValueAsString(responseMap.get("coverageArea"))),
             () -> assertEquals(expectedAddressJson, objectMapper.writeValueAsString(responseMap.get("address")))
         );
+    }
+
+    public void validateResponseIsPartnerResponseDTO(ResultActions response, PartnerResponseDTO partnerResponseDTO) throws Exception {
+        String jsonResponse = response.andReturn().getResponse().getContentAsString();
+        Map<String, Object> responseMap = JsonPath.parse(jsonResponse).read("$");
+
+        this.validateResponseMapIsResponseDTO(responseMap, partnerResponseDTO);
     }
 
     @BeforeEach
@@ -75,14 +81,32 @@ public class PartnerControllerTests {
                 .content(objectMapper.writeValueAsString(partnerRequestDTO)))
             .andExpect(status().isCreated());
 
-        this.validateResponseContainsPartnerResponseDTO(response, partnerResponseDTO);
+        this.validateResponseIsPartnerResponseDTO(response, partnerResponseDTO);
+    }
+
+    @Test
+    public void PartnerController_CreatePartners_ReturnListOfPartnerResponseDto() throws Exception {
+        given(partnerService.createPartners(anyMap())).willReturn(List.of(partnerResponseDTO));
+
+        Map<String, List<PartnerRequestDTO>> content = new HashMap<>();
+        content.put("pdvs", List.of(partnerRequestDTO));
+
+        ResultActions response = mockMvc.perform(post("/api/partners/batch")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(content)))
+            .andExpect(status().isCreated());
+
+        String jsonResponse = response.andReturn().getResponse().getContentAsString();
+        List<Map<String, Object>> responseMapList = JsonPath.parse(jsonResponse).read("$");
+
+        this.validateResponseMapIsResponseDTO(responseMapList.get(0), partnerResponseDTO);
     }
 
     @Test
     public void PartnerController_GetPartnerById_ReturnPartnerResponseDto() throws Exception {
         given(partnerService.getPartnerById(anyLong())).willReturn(partnerResponseDTO);
         ResultActions response = mockMvc.perform(get("/api/partners/1")).andExpect(status().isOk());
-        this.validateResponseContainsPartnerResponseDTO(response, partnerResponseDTO);
+        this.validateResponseIsPartnerResponseDTO(response, partnerResponseDTO);
     }
 
     @Test
@@ -94,6 +118,6 @@ public class PartnerControllerTests {
                 .param("lon", "0"))
             .andExpect(status().isOk());
 
-        this.validateResponseContainsPartnerResponseDTO(response, partnerResponseDTO);
+        this.validateResponseIsPartnerResponseDTO(response, partnerResponseDTO);
     }
 }
