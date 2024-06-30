@@ -9,6 +9,7 @@
     - [Prerequisites](#prerequisites)
     - [Starting the application](#starting-the-application)
 - [API Endpoints](#api-endpoints)
+- [Postman](#postman)
 
 ## Introduction
 
@@ -73,7 +74,13 @@ ZeParceiros is a service that provides an API using REST to manage partners. Thi
     }
   }
   ```
-- **Response**: Created partner with "id".
+- **Response**: Partner with ID.
+
+### Create Multiple Partners
+- **URL**: `/partners/batch`
+- **Method**: `POST`
+- **Request Body**: [pdvs.json](https://raw.githubusercontent.com/ab-inbev-ze-company/ze-code-challenges/master/files/pdvs.json)
+- **Response**: List of `Partner`
 
 ### Load Partner by ID
 - **URL**: `/partners/{id}`
@@ -87,3 +94,7 @@ ZeParceiros is a service that provides an API using REST to manage partners. Thi
     - `lat`: Latitude of the location
     - `lon`: Longitude of the location
 - **Response**: `Partner`
+
+## Postman
+
+You can easily make requests using [this Postman request collection](https://www.postman.com/aviation-candidate-54355508/workspace/my-public-workspace/collection/28291732-99ace203-6804-4282-b676-21f7e52fb22e?action=share&creator=28291732&active-environment=28291732-0f919800-be8f-4a5e-bbde-d9f3e6790b3a).
